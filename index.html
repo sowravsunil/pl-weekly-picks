@@ -1,66 +1,87 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Premier League — weekly picks</title>
+<title>Premier League Weekly Picks</title>
+<meta name="description" content="Probability-based Premier League picks, graded in public.">
 <style>
- :root { color-scheme: dark; }
- * { box-sizing: border-box; }
- body { margin:0; padding:24px 18px 40px; background:#0b0f14; color:#e6edf3;
-        font:15px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
- .wrap { max-width:820px; margin:0 auto; }
- h1 { font-size:22px; margin:0 0 4px; }
- h2 { font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:#8b98a5;
-       margin:30px 0 10px; }
- .sub { color:#8b98a5; font-size:13px; }
+ :root { color-scheme: light dark;
+   --bg:#f7f8fa; --panel:#ffffff; --ink:#0f1720; --muted:#5b6875; --line:#e3e8ee;
+   --ok:#15803d; --no:#b91c1c; --accent:#a16207;
+   --pick-bg:#dcfce7; --pick-fg:#166534; --pick-bd:#86efac;
+   --lean-bg:#fef9c3; --lean-fg:#854d0e; --lean-bd:#fde047;
+   --watch-bg:#eef2f6; --watch-fg:#475569; --watch-bd:#cbd5e1; }
+ @media (prefers-color-scheme: dark) { :root {
+   --bg:#0b0f14; --panel:#0f1620; --ink:#e6edf3; --muted:#8b98a5; --line:#1f2a37;
+   --ok:#4ade80; --no:#f87171; --accent:#facc15;
+   --pick-bg:#123524; --pick-fg:#4ade80; --pick-bd:#1f6f47;
+   --lean-bg:#2a2a12; --lean-fg:#facc15; --lean-bd:#6f6a1f;
+   --watch-bg:#1a2230; --watch-fg:#8b98a5; --watch-bd:#2a3646; } }
+ * { box-sizing:border-box; }
+ body { margin:0; padding:24px 16px 48px; background:var(--bg); color:var(--ink);
+        font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+ .wrap { max-width:840px; margin:0 auto; }
+ h1 { font-size:24px; margin:0 0 4px; letter-spacing:-.01em; }
+ h2 { font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted);
+       margin:32px 0 10px; }
+ .sub, .muted { color:var(--muted); } .sub { font-size:13px; }
+ .card { background:var(--panel); border:1px solid var(--line); border-radius:10px;
+          padding:4px 12px; overflow-x:auto; }
  table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
- th { text-align:left; font-weight:600; color:#8b98a5; font-size:11px;
-       text-transform:uppercase; letter-spacing:.06em; padding:6px 8px;
-       border-bottom:1px solid #1f2a37; }
- td { padding:9px 8px; border-bottom:1px solid #141c26; }
- .tier { font-size:10px; font-weight:700; letter-spacing:.06em; padding:3px 8px;
-          border-radius:999px; }
- .tier.pick { background:#123524; color:#4ade80; border:1px solid #1f6f47; }
- .tier.lean { background:#2a2a12; color:#facc15; border:1px solid #6f6a1f; }
- .tier.watch { background:#1a2230; color:#8b98a5; border:1px solid #2a3646; }
- .match { font-weight:600; }
- .vs { color:#5b6875; font-weight:400; }
- .ko { color:#8b98a5; font-weight:400; font-size:11px; }
- .pick { white-space:nowrap; }
- .ok { color:#4ade80; } .no { color:#f87171; }
+ th { text-align:left; font-weight:600; color:var(--muted); font-size:11px;
+       text-transform:uppercase; letter-spacing:.06em; padding:8px 6px;
+       border-bottom:1px solid var(--line); }
+ td { padding:10px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+ tr:last-child td { border-bottom:0; }
+ .num, .nowrap { text-align:right; white-space:nowrap; } .nowrap { text-align:left; } th.num { text-align:right; }
+ .big { font-size:18px; font-weight:700; }
+ .tier { display:inline-block; font-size:10px; font-weight:700; letter-spacing:.06em;
+          padding:3px 8px; border-radius:999px; border:1px solid; }
+ .tier.pick { background:var(--pick-bg); color:var(--pick-fg); border-color:var(--pick-bd); }
+ .tier.lean { background:var(--lean-bg); color:var(--lean-fg); border-color:var(--lean-bd); }
+ .tier.watch { background:var(--watch-bg); color:var(--watch-fg); border-color:var(--watch-bd); }
+ .match { font-weight:600; } .vs { color:var(--muted); font-weight:400; }
+ .ko { font-weight:400; font-size:12px; margin-top:2px; }
+ .ok { color:var(--ok); font-weight:700; } .no { color:var(--no); font-weight:700; }
+ .best { color:var(--ok); font-weight:700; }
  .two { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
- .note { background:#0f1620; border:1px solid #1f2a37; border-left:3px solid #facc15;
-          padding:12px 14px; border-radius:6px; color:#c3cdd8; font-size:12px;
-          margin-top:28px; }
- .best { color:#4ade80; font-weight:700; }
- @media (max-width:680px) { .two { grid-template-columns:1fr; } }
+ .note { background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent);
+          padding:12px 14px; border-radius:8px; font-size:13px; margin-top:32px; }
+ @media (max-width:680px) { .two { grid-template-columns:1fr; } .big { font-size:16px; } }
 </style></head><body><div class="wrap">
 
-<h1>Premier League — weekly picks</h1>
-<div class="sub">Gameweek 8 · updated 24 October 2026</div>
+<h1>Premier League Weekly Picks</h1>
+<div class="sub">Gameweek 8 · updated Sun 25 Oct 2026, 06:20 UTC · results through 19 Oct</div>
 
-<h2>This week</h2>
-<table><thead><tr><th>Tier</th><th>Match</th><th>Pick</th></tr></thead>
-<tbody><tr><td><span class='tier lean'>LEAN</span></td><td class='match'>Man United <span class='vs'>v</span> Fulham<div class='ko'>Sat 24 Oct, 14:00 UTC</div></td><td class='pick'>Home <b>62%</b></td></tr><tr><td><span class='tier lean'>LEAN</span></td><td class='match'>Brighton <span class='vs'>v</span> Nott'm Forest<div class='ko'>Sun 25 Oct, 14:00 UTC</div></td><td class='pick'>Home <b>56%</b></td></tr><tr><td><span class='tier lean'>LEAN</span></td><td class='match'>Liverpool <span class='vs'>v</span> Newcastle<div class='ko'>Sun 25 Oct, 14:00 UTC</div></td><td class='pick'>Home <b>62%</b></td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='match'>Leeds <span class='vs'>v</span> Chelsea<div class='ko'>Sat 24 Oct, 11:30 UTC</div></td><td class='pick'>Away <b>39%</b></td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='match'>Aston Villa <span class='vs'>v</span> Tottenham<div class='ko'>Sat 24 Oct, 14:00 UTC</div></td><td class='pick'>Home <b>53%</b></td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='match'>Sunderland <span class='vs'>v</span> Wolves<div class='ko'>Sat 24 Oct, 16:30 UTC</div></td><td class='pick'>Home <b>49%</b></td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='match'>Everton <span class='vs'>v</span> Brentford<div class='ko'>Sun 25 Oct, 14:00 UTC</div></td><td class='pick'>Home <b>42%</b></td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='match'>Man City <span class='vs'>v</span> Arsenal<div class='ko'>Sun 25 Oct, 14:00 UTC</div></td><td class='pick'>Home <b>47%</b></td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='match'>Burnley <span class='vs'>v</span> Crystal Palace<div class='ko'>Sun 25 Oct, 16:30 UTC</div></td><td class='pick'>Away <b>40%</b></td></tr></tbody></table>
-<div class="sub" style="margin-top:8px">
- PICK = strong and all models agree; LEAN = moderate and all agree; WATCH = too close to call.
-</div>
+<h2>This gameweek</h2>
+<div class="card"><table><thead><tr><th>Tier</th><th>Match</th><th class="num">Our pick</th>
+<th class="num">Bookmakers</th></tr></thead><tbody><tr><td><span class='tier lean'>LEAN</span></td><td class='match'>Man United <span class='vs'>v</span> Bournemouth<div class='ko'><span class='muted'>Sun 25 Oct, 14:00 UTC</span></div></td><td class='num'>Home<div class='big'>56%</div></td><td class='num muted'>45%</td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='match'>Crystal Palace <span class='vs'>v</span> Newcastle<div class='ko'><span class='muted'>Sun 25 Oct, 14:00 UTC</span></div></td><td class='num'>Home<div class='big'>40%</div></td><td class='num muted'>33%</td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='match'>Hull <span class='vs'>v</span> Brentford<div class='ko'><span class='muted'>Sun 25 Oct, 14:00 UTC</span></div></td><td class='num'>Away<div class='big'>46%</div></td><td class='num muted'>57%</td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='match'>Liverpool <span class='vs'>v</span> Brighton<div class='ko'><span class='muted'>Sun 25 Oct, 14:00 UTC</span></div></td><td class='num'>Home<div class='big'>52%</div></td><td class='num muted'>46%</td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='match'>Sunderland <span class='vs'>v</span> Leeds<div class='ko'><span class='muted'>Sun 25 Oct, 16:30 UTC</span></div></td><td class='num'>Away<div class='big'>37%</div></td><td class='num muted'>40%</td></tr></tbody></table></div>
+<div class="sub" style="margin-top:8px">PICK = strong and all our models agree; LEAN = moderate
+and all agree; WATCH = too close to call. "Bookmakers" is their probability for the same
+outcome, with the margin removed.</div>
 
 <div class="two">
 <div>
-<h2>How it's doing</h2>
-<table><thead><tr><th></th><th>Matches</th><th>Score ↓</th></tr></thead><tbody>
-<tr><td>Our picks</td><td>70</td><td class="">0.1997</td></tr>
-<tr><td>Bookmaker benchmark</td><td>70</td><td class="best">0.1982</td></tr>
-</tbody></table>
-<div class="sub" style="margin-top:8px">Score: lower is better. At 70 matches the gap between
-these two rows is inside noise — one season is not evidence.</div>
+<h2>Published picks record</h2>
+<div class="card"><table><thead><tr><th>Tier</th><th class="num">Right</th>
+<th class="num">Rate</th><th class="num">Expected</th></tr></thead><tbody><tr><td><span class='tier pick'>PICK</span></td><td class='num'>0 / 0</td><td class='num'>—</td><td class='num muted'>≈75%</td></tr><tr><td><span class='tier lean'>LEAN</span></td><td class='num'>0 / 0</td><td class='num'>—</td><td class='num muted'>≈70%</td></tr><tr><td><span class='tier watch'>WATCH</span></td><td class='num'>0 / 0</td><td class='num'>—</td><td class='num muted'>≈45–55%</td></tr></tbody></table></div>
+<div class="sub" style="margin-top:8px">Every pick as it was published, from gameweek 8 on. 0 graded so far — too few to judge a tier until there are dozens.</div>
 </div>
 <div>
+<h2>Probability score this season</h2>
+<div class="card"><table><thead><tr><th></th><th class="num">Matches</th><th class="num">Score ↓</th></tr></thead><tbody>
+<tr><td>Our model</td><td class="num">70</td><td class="num ">0.1997</td></tr>
+<tr><td>Bookmakers</td><td class="num">70</td><td class="num best">0.1982</td></tr>
+</tbody></table></div>
+<div class="sub" style="margin-top:8px">Scores every match, not just picks; lower is better.
+At 70 matches the gap between the rows is inside noise.</div>
+</div>
+</div>
+
 <h2>Recent results</h2>
-<table><thead><tr><th>Date</th><th>Match</th><th>Score</th><th></th></tr></thead>
-<tbody><tr><td>11 Oct</td><td class='match'>Crystal Palace v Nott'm Forest</td><td>3–1</td><td><span class='ok'>✓</span></td></tr><tr><td>11 Oct</td><td class='match'>Hull v Everton</td><td>2–2</td><td><span class='no'>✗</span></td></tr><tr><td>11 Oct</td><td class='match'>Liverpool v Man City</td><td>0–3</td><td><span class='ok'>✓</span></td></tr><tr><td>12 Oct</td><td class='match'>Coventry v Newcastle</td><td>4–1</td><td><span class='no'>✗</span></td></tr><tr><td>17 Oct</td><td class='match'>Brentford v Liverpool</td><td>1–2</td><td><span class='no'>✗</span></td></tr><tr><td>17 Oct</td><td class='match'>Everton v Chelsea</td><td>0–2</td><td><span class='no'>✗</span></td></tr><tr><td>17 Oct</td><td class='match'>Fulham v Hull</td><td>1–0</td><td><span class='ok'>✓</span></td></tr><tr><td>17 Oct</td><td class='match'>Man City v Ipswich</td><td>3–2</td><td><span class='ok'>✓</span></td></tr><tr><td>17 Oct</td><td class='match'>Newcastle v Aston Villa</td><td>0–1</td><td><span class='no'>✗</span></td></tr><tr><td>18 Oct</td><td class='match'>Bournemouth v Sunderland</td><td>2–0</td><td><span class='ok'>✓</span></td></tr><tr><td>18 Oct</td><td class='match'>Brighton v Crystal Palace</td><td>5–0</td><td><span class='ok'>✓</span></td></tr><tr><td>18 Oct</td><td class='match'>Leeds v Man United</td><td>1–1</td><td><span class='no'>✗</span></td></tr><tr><td>18 Oct</td><td class='match'>Nott'm Forest v Arsenal</td><td>0–1</td><td><span class='ok'>✓</span></td></tr><tr><td>19 Oct</td><td class='match'>Tottenham v Coventry</td><td>3–1</td><td><span class='ok'>✓</span></td></tr></tbody></table>
-</div>
-</div>
+<div class="card"><table><thead><tr><th>Date</th><th>Match</th><th class="num">Score</th>
+<th class="num">Model's pick</th></tr></thead><tbody><tr><td class='muted nowrap'>19 Oct</td><td class='match'>Tottenham v Coventry</td><td class='num'>3–1</td><td class='num'>Home <span class='ok'>✓</span></td></tr><tr><td class='muted nowrap'>18 Oct</td><td class='match'>Nott&#x27;m Forest v Arsenal</td><td class='num'>0–1</td><td class='num'>Away <span class='ok'>✓</span></td></tr><tr><td class='muted nowrap'>18 Oct</td><td class='match'>Leeds v Man United</td><td class='num'>1–1</td><td class='num'>Away <span class='no'>✗</span></td></tr><tr><td class='muted nowrap'>18 Oct</td><td class='match'>Brighton v Crystal Palace</td><td class='num'>5–0</td><td class='num'>Home <span class='ok'>✓</span></td></tr><tr><td class='muted nowrap'>18 Oct</td><td class='match'>Bournemouth v Sunderland</td><td class='num'>2–0</td><td class='num'>Home <span class='ok'>✓</span></td></tr><tr><td class='muted nowrap'>17 Oct</td><td class='match'>Newcastle v Aston Villa</td><td class='num'>0–1</td><td class='num'>Home <span class='no'>✗</span></td></tr><tr><td class='muted nowrap'>17 Oct</td><td class='match'>Man City v Ipswich</td><td class='num'>3–2</td><td class='num'>Home <span class='ok'>✓</span></td></tr><tr><td class='muted nowrap'>17 Oct</td><td class='match'>Fulham v Hull</td><td class='num'>1–0</td><td class='num'>Home <span class='ok'>✓</span></td></tr><tr><td class='muted nowrap'>17 Oct</td><td class='match'>Everton v Chelsea</td><td class='num'>0–2</td><td class='num'>Home <span class='no'>✗</span></td></tr><tr><td class='muted nowrap'>17 Oct</td><td class='match'>Brentford v Liverpool</td><td class='num'>1–2</td><td class='num'>Home <span class='no'>✗</span></td></tr></tbody></table></div>
+<div class="sub" style="margin-top:8px">Every match, scored after the fact with the model's
+pre-match probabilities. The published record above is the one to judge.</div>
 
 <div class="note">
  <b>Read this first.</b> These are probabilities, not guarantees — three strong picks in one
