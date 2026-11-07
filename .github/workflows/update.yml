@@ -1,10 +1,11 @@
 name: Update picks
 
-# Three times a day: early for overnight results, late morning before the lunchtime
-# kick-offs, early evening before the night games.
+# Every hour. GitHub runs scheduled jobs late or skips them when it is busy, so a frequent
+# schedule is what makes sure each pick is published before kick-off. A run that finds
+# nothing new changes nothing.
 on:
   schedule:
-    - cron: "47 5,11,17 * * *"
+    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -28,13 +29,13 @@ jobs:
 
       - name: Check out the site
         if: env.HAS_TOKEN == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: site
 
       - name: Check out the model
         if: env.HAS_TOKEN == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: sowravsunil/pl-prediction-model
           token: ${{ secrets.MODEL_REPO_TOKEN }}
@@ -43,7 +44,7 @@ jobs:
 
       - name: Set up Python
         if: env.HAS_TOKEN == 'true'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.13"
           cache: pip
@@ -101,7 +102,10 @@ jobs:
           cd model
           git add data/raw/E0_*.csv docs/picks_history.csv docs/public \
                   docs/live_tracking.md docs/live_run_manifest.json docs/weekend_picks.md docs/dashboard.html
-          if [ "${{ steps.refresh.outputs.status }}" != "0" ] || ! git diff --cached --quiet; then
+          # Commit when the data, the picks record or the page changed, or the run failed;
+          # a run that only moved timestamps is not worth a commit.
+          if [ "${{ steps.refresh.outputs.status }}" != "0" ] || \
+             ! git diff --cached --quiet -- data/raw docs/picks_history.csv docs/public; then
             mkdir -p run_log && cp ../run.log run_log/last_run.txt && git add -f run_log/last_run.txt
             git -c user.name="github-actions[bot]" \
                 -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \

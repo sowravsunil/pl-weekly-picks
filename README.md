@@ -5,4 +5,4 @@ every match, posted before kick-off and checked against the result and the bookm
 
 **Live page:** https://sowravsunil.github.io/pl-weekly-picks/
 
-The page updates itself three times a day. Not betting advice.
+The page checks for new data every hour. Not betting advice.
